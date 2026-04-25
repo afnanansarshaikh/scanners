@@ -120,7 +120,7 @@
     loginMsg.textContent = 'Checking credentials...';
     diagEl.style.display = 'none';
 
-    api('login', { name: name, pin: pin })
+    api('login', { name: name, pin: pin, page: PAGE })
       .then(function(res) {
         loginBtn.disabled = false;
         if (!res || !res.ok) {
@@ -196,7 +196,7 @@
   function handleCode(data) {
     var serial = data.indexOf('|') !== -1 ? data.split('|')[0] : data;
     statusEl.textContent = 'Checking ' + (serial || '...');
-    api('scan', { payload: data, staffLabel: staffLabel, sessionId: staffSessionId })
+    api('scan', { payload: data, staffLabel: staffLabel, sessionId: staffSessionId, page: PAGE })
       .then(function(res) {
         if (!res) { flash('#c62828', '\u2717 Error'); statusEl.textContent = 'Error'; resume(); return; }
         if (res.status === 'found' && res.giveaway === 'No') { flash('#2e7d32', '\u2713 Granted'); showOverlay('Giveaway Granted \u2713', 'ok'); statusEl.textContent = 'Giveaway granted'; }
