@@ -85,8 +85,9 @@
   var staffSessionId = null, isAdmin = false;
 
   // API call via fetch — uses text/plain to avoid CORS preflight
+  var _SECRET = 'ad66538487ecebc7c5e893078f016de6e6046aed65d69de5405005f511d1c3c8';
   function api(action, params) {
-    var body = Object.assign({ action: action, page: PAGE }, params);
+    var body = Object.assign({ action: action, page: PAGE, secret: _SECRET }, params);
     return fetch(API_URL, {
       method: 'POST',
       body: JSON.stringify(body),
