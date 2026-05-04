@@ -197,6 +197,9 @@
         document.getElementById('signedInBar').style.display  = 'flex';
         document.getElementById('activeGroupLabel').textContent = group;
         document.getElementById('serialFilter').value = '';
+    activeSheet = 'all';
+    document.querySelectorAll('.tab-btn').forEach(function(b,i){ b.classList.toggle('active',i===0); });
+    document.getElementById('unreleasedOnly').checked = false;
         renderTable();
       })
       .catch(function(e) {
@@ -254,30 +257,42 @@
   }
 
   function renderTable() {
-    var filter  = document.getElementById('serialFilter').value.trim().toLowerCase();
-    var tickets = filter
-      ? allTickets.filter(function(t) { return t.serial.toLowerCase().indexOf(filter) !== -1; })
-      : allTickets;
+    var serialFilter   = document.getElementById('serialFilter').value.trim().toLowerCase();
+    var unreleasedOnly = document.getElementById('unreleasedOnly').checked;
+
+    var tickets = allTickets.filter(function(t) {
+      if (activeSheet !== 'all' && t.sheet !== activeSheet) return false;
+      if (unreleasedOnly && t.released) return false;
+      if (serialFilter && t.serial.toLowerCase().indexOf(serialFilter) === -1) return false;
+      return true;
+    });
+
+    // Count badge
+    var scopeTickets = allTickets.filter(function(t) { return activeSheet === 'all' || t.sheet === activeSheet; });
+    var unreleased = scopeTickets.filter(function(t) { return !t.released; }).length;
+    var badge = document.getElementById('countBadge');
+    badge.textContent = unreleased + ' of ' + scopeTickets.length + ' unreleased';
+    badge.className = unreleased > 0 ? 'badge unreleased' : 'badge total';
 
     if (tickets.length === 0) {
+      var msg = serialFilter ? 'No matching serial.' : (unreleasedOnly ? 'All tickets in this view are released.' : 'No tickets in this group.');
       document.getElementById('tableWrap').innerHTML =
-        '<div style="color:var(--muted);font-size:14px;padding:20px 0;text-align:center;">' +
-        (filter ? 'No matching serial.' : 'No tickets in this group.') + '</div>';
+        '<div style="color:var(--muted);font-size:14px;padding:20px 0;text-align:center;">' + msg + '</div>';
       return;
     }
 
-    var html = '<div class="tbl-header"><div>Serial</div><div class="h-name">Name</div><div>Status</div></div>';
+    var h = '<div class="tbl-header"><div>Serial</div><div class="h-name">Name</div><div>Status</div></div>';
     tickets.forEach(function(t) {
-      html += '<div class="tbl-row"><div>' + esc(t.serial) + '</div>' +
-              '<div class="name-cell">' + esc(t.name || '—') + '</div><div>';
+      h += '<div class="tbl-row"><div>' + esc(t.serial) + '</div>' +
+           '<div class="name-cell">' + esc(t.name || '—') + '</div><div>';
       if (t.released) {
-        html += '<span class="released-tag">Released</span>';
+        h += '<span class="released-tag">Released</span>';
       } else {
-        html += '<button class="release-btn" onclick="doRelease(\'' + esc(t.serial) + '\',this)">Release</button>';
+        h += '<button class="release-btn" onclick="doRelease('' + esc(t.serial) + '',this)">Release</button>';
       }
-      html += '</div></div>';
+      h += '</div></div>';
     });
-    document.getElementById('tableWrap').innerHTML = html;
+    document.getElementById('tableWrap').innerHTML = h;
   }
 
   function doRelease(serial, btn) {
