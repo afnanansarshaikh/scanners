@@ -101,8 +101,22 @@
     <div id="mainContent" style="display:none;">
       <div id="signedInBar">
         <div class="info">Group: <span id="activeGroupLabel"></span></div>
-        <button class="btn secondary" id="lockBtn" style="min-height:36px;padding:6px 12px;font-size:13px;">🔒 Lock</button>
+        <button class="btn secondary" id="lockBtn" style="min-height:36px;padding:6px 12px;font-size:13px;">🔒 Logout</button>
       </div>
+      <!-- Sheet filter tabs -->
+      <div class="sheet-tabs" id="sheetTabs">
+        <button class="tab-btn active" data-sheet="all">All</button>
+        <button class="tab-btn" data-sheet="Singles">Singles</button>
+        <button class="tab-btn" data-sheet="Families">Families</button>
+      </div>
+
+      <!-- Unreleased filter + count -->
+      <div class="filter-row">
+        <label><input type="checkbox" id="unreleasedOnly"> Show unreleased only</label>
+        <span id="countBadge" class="badge total"></span>
+      </div>
+
+      <!-- Serial search + refresh -->
       <div class="controls-row">
         <div class="field-group">
           <label for="serialFilter">Filter by Serial</label>
