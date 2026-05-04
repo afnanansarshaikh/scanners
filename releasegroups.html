@@ -6,114 +6,114 @@
   <title>Release Groups</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg:#f0f2f5; --card:#fff; --accent:#1a56db; --ok:#16a34a;
-      --err:#dc2626; --muted:#6b7280; --text:#111827; --border:#e5e7eb;
-      --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.05);
-    }
+    :root{--bg:#f0f2f5;--card:#fff;--accent:#1a56db;--ok:#16a34a;--err:#dc2626;--muted:#6b7280;--text:#111827;--border:#e5e7eb;--shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.05);}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;}
     .wrap{max-width:760px;width:100%;margin:0 auto;padding:20px 16px 40px;}
-    .back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);font-family:inherit;padding:0;margin-bottom:16px;text-decoration:none;}
-    .back-btn:hover{text-decoration:underline;}
+    a.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;margin-bottom:16px;}
+    a.back-btn:hover{text-decoration:underline;}
     .card{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:24px;box-shadow:var(--shadow);}
     .page-title{font-size:20px;font-weight:700;margin-bottom:4px;}
     .page-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
     label{font-size:14px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px;}
     select,input[type=text],input[type=password]{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-family:inherit;color:var(--text);background:#f9fafb;}
     select:focus,input:focus{outline:none;border-color:var(--accent);background:#fff;}
-    .btn{padding:10px 16px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:14px;font-family:inherit;transition:all 0.18s;min-height:44px;white-space:nowrap;}
+    .btn{padding:10px 16px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:14px;font-family:inherit;transition:all 0.18s;min-height:44px;}
     .btn.primary{background:var(--accent);color:#fff;width:100%;}
     .btn.primary:hover{background:#1e40af;}
     .btn.secondary{background:#f3f4f6;color:var(--text);border:1px solid var(--border);}
     .btn.secondary:hover{background:#e5e7eb;}
-    .btn.danger{background:var(--err);color:#fff;}
     .btn:disabled{opacity:0.5;cursor:not-allowed;}
-    .release-btn{background:var(--accent);color:#fff;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;min-height:32px;}
-    .release-btn:hover{background:#1e40af;}
-    .release-btn:disabled{opacity:0.5;cursor:not-allowed;}
-    .released-tag{display:inline-block;padding:3px 10px;border-radius:20px;background:#dcfce7;color:#166534;font-size:12px;font-weight:700;}
+    /* Sheet tabs */
+    .sheet-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+    .tab{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:#f9fafb;color:var(--muted);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all 0.15s;}
+    .tab:hover{border-color:var(--accent);color:var(--accent);}
+    .tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+    /* Filters */
+    .filter-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+    .check-label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;margin:0;}
+    .check-label input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
+    .count-badge{padding:2px 10px;border-radius:12px;font-size:12px;font-weight:700;}
+    .count-badge.has-unreleased{background:#fef3c7;color:#92400e;}
+    .count-badge.all-released{background:#f3f4f6;color:var(--muted);}
+    /* Controls */
+    .controls-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:12px;}
+    .field-group{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px;}
+    /* Table */
     .tbl-header{display:grid;grid-template-columns:1fr 1fr 110px;gap:8px;padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:700;border-bottom:2px solid var(--border);}
     .tbl-row{display:grid;grid-template-columns:1fr 1fr 110px;gap:8px;padding:11px 12px;border-bottom:1px solid #f3f4f6;align-items:center;font-size:13px;}
     .tbl-row:last-child{border-bottom:none;}
     .tbl-row:hover{background:#f9fafb;}
-    .controls-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px;}
-    .field-group{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px;}
-    #tableWrap{margin-top:12px;}
-    #statusMsg{font-size:13px;font-weight:600;min-height:20px;margin-top:8px;}
-    #statusMsg.err{color:var(--err);}
-    #statusMsg.ok{color:var(--ok);}
-
-    /* PIN login screen */
-    #pinScreen{text-align:center;padding:16px 0 8px;}
-    #pinScreen .pin-title{font-size:17px;font-weight:700;margin-bottom:6px;}
-    #pinScreen .pin-sub{font-size:13px;color:var(--muted);margin-bottom:18px;}
-    #pinScreen input{max-width:280px;margin:0 auto 12px;text-align:center;font-size:22px;letter-spacing:6px;}
-    #pinScreen .btn{max-width:280px;margin:0 auto;}
-    #pinMsg{font-size:13px;color:var(--err);min-height:18px;margin-top:8px;}
+    .release-btn{background:var(--accent);color:#fff;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;min-height:32px;}
+    .release-btn:hover{background:#1e40af;}
+    .release-btn:disabled{opacity:0.5;cursor:not-allowed;}
+    .released-tag{display:inline-block;padding:3px 10px;border-radius:20px;background:#dcfce7;color:#166534;font-size:12px;font-weight:700;}
+    #statusMsg{font-size:13px;font-weight:600;min-height:20px;margin-bottom:8px;}
+    #statusMsg.err{color:var(--err);}#statusMsg.ok{color:var(--ok);}
+    /* Sign-in bar */
     #signedInBar{display:none;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
-    #signedInBar .info{font-size:13px;font-weight:600;color:var(--muted);}
-    #signedInBar .info span{color:var(--accent);}
-
+    .signed-info{font-size:13px;font-weight:600;color:var(--muted);}.signed-info span{color:var(--accent);}
+    /* PIN screen */
+    #pinScreen .pin-title{font-size:17px;font-weight:700;margin-bottom:6px;text-align:center;}
+    #pinScreen .pin-sub{font-size:13px;color:var(--muted);margin-bottom:18px;text-align:center;}
+    #pinScreen .pin-inner{max-width:300px;margin:0 auto;}
+    #pinScreen input[type=password]{text-align:center;font-size:22px;letter-spacing:6px;margin-bottom:10px;}
+    #pinMsg{font-size:13px;color:var(--err);min-height:18px;text-align:center;margin-top:6px;}
     @media(max-width:600px){
-      .wrap{padding:10px 8px 24px;}
-      .card{padding:14px 10px;}
-      .page-title{font-size:16px;}
-      .page-sub{font-size:12px;margin-bottom:12px;}
+      .wrap{padding:10px 8px 24px;}.card{padding:14px 10px;}
+      .page-title{font-size:16px;}.page-sub{font-size:12px;margin-bottom:12px;}
       .tbl-header,.tbl-row{grid-template-columns:1fr 80px;gap:4px;padding:8px;}
       .tbl-header .h-name,.name-cell{display:none;}
-      .controls-row{flex-direction:column;gap:8px;}
-      .controls-row .btn{width:100%;}
+      .controls-row{flex-direction:column;gap:8px;}.controls-row .btn{width:100%;}
       .field-group{width:100%;min-width:unset;flex:unset;}
-      .tbl-row{font-size:12px;}
-      .tbl-header{font-size:9px;letter-spacing:0.4px;}
-      label{font-size:13px;}
+      .tbl-row{font-size:12px;}.tbl-header{font-size:9px;}
     }
     @media(max-width:380px){
-      .wrap{padding:8px 6px 20px;}
-      .card{padding:12px 8px;}
-      .page-title{font-size:14px;}
       .tbl-header,.tbl-row{grid-template-columns:1fr 72px;}
+      .page-title{font-size:14px;}
     }
   </style>
 </head>
 <body>
 <div class="wrap">
-  <a class="back-btn" id="homeLink" href="#">&#8592; Back to Home</a>
+  <a class="back-btn" href="https://script.google.com/macros/s/AKfycbzDTSUGQu-U3likHzVhAEysdzI2GyQnEuwGhDrlr026gbotWXTVkIUIkGFyn-tmgMqVng/exec?page=home">&#8592; Back to Home</a>
   <div class="card">
     <div class="page-title">Release Groups</div>
     <div class="page-sub">Enter your group PIN to view and release tickets.</div>
 
-    <!-- PIN login screen — shown first -->
+    <!-- PIN login -->
     <div id="pinScreen">
       <div class="pin-title">🔒 Group PIN Required</div>
-      <div class="pin-sub">Select your group and enter the PIN assigned to it.</div>
-      <div class="field-group" style="max-width:280px;margin:0 auto 12px;">
-        <label for="pinGroupSelect">Group</label>
-        <select id="pinGroupSelect"><option value="">Loading...</option></select>
+      <div class="pin-sub">Select your group and enter its PIN.</div>
+      <div class="pin-inner">
+        <div class="field-group" style="margin-bottom:10px;">
+          <label for="pinGroupSel">Group</label>
+          <select id="pinGroupSel"><option value="">Loading groups...</option></select>
+        </div>
+        <input type="password" id="pinInput" placeholder="PIN" maxlength="20" autocomplete="off">
+        <button class="btn primary" id="pinBtn" style="margin-top:10px;">Unlock</button>
+        <div id="pinMsg"></div>
       </div>
-      <input type="password" id="pinInput" placeholder="Enter PIN" maxlength="20" autocomplete="off">
-      <button class="btn primary" id="pinBtn">Unlock</button>
-      <div id="pinMsg"></div>
     </div>
 
-    <!-- Main content — hidden until PIN verified -->
+    <!-- Main content (hidden until PIN verified) -->
     <div id="mainContent" style="display:none;">
       <div id="signedInBar">
-        <div class="info">Group: <span id="activeGroupLabel"></span></div>
+        <div class="signed-info">Group: <span id="activeGroupLabel"></span></div>
         <button class="btn secondary" id="lockBtn" style="min-height:36px;padding:6px 12px;font-size:13px;">🔒 Logout</button>
       </div>
-      <!-- Sheet filter tabs -->
-      <div class="sheet-tabs" id="sheetTabs">
-        <button class="tab-btn active" data-sheet="all">All</button>
-        <button class="tab-btn" data-sheet="Singles">Singles</button>
-        <button class="tab-btn" data-sheet="Families">Families</button>
+
+      <!-- Sheet tabs -->
+      <div class="sheet-tabs">
+        <button class="tab active" data-sheet="all">All</button>
+        <button class="tab" data-sheet="Singles">Singles</button>
+        <button class="tab" data-sheet="Families">Families</button>
       </div>
 
-      <!-- Unreleased filter + count -->
-      <div class="filter-row">
-        <label><input type="checkbox" id="unreleasedOnly"> Show unreleased only</label>
-        <span id="countBadge" class="badge total"></span>
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <label class="check-label"><input type="checkbox" id="unreleasedOnly"> Show unreleased only</label>
+        <span id="countBadge" class="count-badge all-released"></span>
       </div>
 
       <!-- Serial search + refresh -->
@@ -122,70 +122,69 @@
           <label for="serialFilter">Filter by Serial</label>
           <input type="text" id="serialFilter" placeholder="e.g. 1001" autocomplete="off">
         </div>
-        <button class="btn secondary" id="refreshBtn">↻ Refresh</button>
+        <button class="btn secondary" id="refreshBtn">&#8635; Refresh</button>
       </div>
+
       <div id="statusMsg"></div>
-      <div id="tableWrap"><div style="color:var(--muted);font-size:14px;padding:20px 0;text-align:center;">Loading tickets...</div></div>
+      <div id="tableWrap"></div>
     </div>
   </div>
 </div>
-
 <script>
-  var API_URL  = 'https://script.google.com/macros/s/AKfycbzDTSUGQu-U3likHzVhAEysdzI2GyQnEuwGhDrlr026gbotWXTVkIUIkGFyn-tmgMqVng/exec';
-  var HOME_URL = 'https://script.google.com/macros/s/AKfycbzDTSUGQu-U3likHzVhAEysdzI2GyQnEuwGhDrlr026gbotWXTVkIUIkGFyn-tmgMqVng/exec?page=home';
-  var _SECRET  = 'ad66538487ecebc7c5e893078f016de6e6046aed65d69de5405005f511d1c3c8';
+  var API_URL = 'https://script.google.com/macros/s/AKfycbzDTSUGQu-U3likHzVhAEysdzI2GyQnEuwGhDrlr026gbotWXTVkIUIkGFyn-tmgMqVng/exec';
+  var _SECRET = 'ad66538487ecebc7c5e893078f016de6e6046aed65d69de5405005f511d1c3c8';
+  var currentGroup = '', currentPin = '', allTickets = [], activeSheet = 'all';
 
-  document.getElementById('homeLink').href = HOME_URL;
-
-  var currentGroup = '', currentPin = '', allTickets = [];
-
+  // ── API helper ────────────────────────────────────────────────────────────
   function api(action, params) {
+    var body = Object.assign({ action: action, secret: _SECRET }, params || {});
     return fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(Object.assign({ action: action, secret: _SECRET }, params)),
+      body: JSON.stringify(body),
       redirect: 'follow'
     }).then(function(r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.text();
     }).then(function(t) {
       try { return JSON.parse(t); }
-      catch(e) { throw new Error('Bad response: ' + t.substring(0, 100)); }
+      catch(e) { throw new Error('Bad response: ' + t.substring(0, 120)); }
     });
   }
 
   function esc(s) {
     return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-
-  function setStatus(msg, type) {
+  function setStatus(msg, cls) {
     var el = document.getElementById('statusMsg');
-    el.textContent = msg;
-    el.className = type || '';
+    el.textContent = msg; el.className = cls || '';
   }
 
-  // Load group list into both dropdowns on page load
-  api('getReleaseGroups')
-    .then(function(res) {
-      var sel = document.getElementById('pinGroupSelect');
-      if (!res || !res.ok || !res.groups || res.groups.length === 0) {
-        sel.innerHTML = '<option value="">No groups available</option>';
-        return;
-      }
-      sel.innerHTML = '<option value="">— Select group —</option>';
-      res.groups.forEach(function(g) {
-        var o = document.createElement('option');
-        o.value = g; o.textContent = g;
-        sel.appendChild(o);
+  // ── Load groups into PIN dropdown on page load ────────────────────────────
+  function loadGroups() {
+    api('getReleaseGroups')
+      .then(function(res) {
+        var sel = document.getElementById('pinGroupSel');
+        if (!res || !res.ok || !res.groups || !res.groups.length) {
+          sel.innerHTML = '<option value="">No groups available</option>';
+          return;
+        }
+        sel.innerHTML = '<option value="">— Select group —</option>';
+        res.groups.forEach(function(g) {
+          var o = document.createElement('option');
+          o.value = g; o.textContent = g;
+          sel.appendChild(o);
+        });
+      })
+      .catch(function(e) {
+        document.getElementById('pinGroupSel').innerHTML = '<option value="">Error: ' + e.message + '</option>';
       });
-    })
-    .catch(function() {
-      document.getElementById('pinGroupSelect').innerHTML = '<option value="">Error loading groups</option>';
-    });
+  }
+  loadGroups();
 
-  // PIN submit — validate by trying to load tickets
+  // ── PIN submit ────────────────────────────────────────────────────────────
   document.getElementById('pinBtn').addEventListener('click', function() {
-    var group = document.getElementById('pinGroupSelect').value.trim();
+    var group = document.getElementById('pinGroupSel').value.trim();
     var pin   = document.getElementById('pinInput').value.trim();
     var msg   = document.getElementById('pinMsg');
     if (!group) { msg.textContent = 'Please select a group.'; return; }
@@ -193,7 +192,6 @@
     msg.textContent = '';
     document.getElementById('pinBtn').disabled = true;
     document.getElementById('pinBtn').textContent = 'Checking...';
-
     api('getReleaseGroupTickets', { group: group, pin: pin })
       .then(function(res) {
         document.getElementById('pinBtn').disabled = false;
@@ -202,101 +200,102 @@
           msg.textContent = res && res.message ? res.message : 'Incorrect PIN.';
           return;
         }
-        // PIN correct — unlock
-        currentGroup = group;
-        currentPin   = pin;
-        allTickets   = res.tickets || [];
-        document.getElementById('pinScreen').style.display    = 'none';
-        document.getElementById('mainContent').style.display  = 'block';
-        document.getElementById('signedInBar').style.display  = 'flex';
+        currentGroup = group; currentPin = pin;
+        allTickets = res.tickets || [];
+        document.getElementById('pinScreen').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById('signedInBar').style.display = 'flex';
         document.getElementById('activeGroupLabel').textContent = group;
         document.getElementById('serialFilter').value = '';
-    activeSheet = 'all';
-    document.querySelectorAll('.tab-btn').forEach(function(b,i){ b.classList.toggle('active',i===0); });
-    document.getElementById('unreleasedOnly').checked = false;
         renderTable();
       })
       .catch(function(e) {
         document.getElementById('pinBtn').disabled = false;
         document.getElementById('pinBtn').textContent = 'Unlock';
-        msg.textContent = 'Connection error. Try again.';
+        msg.textContent = 'Connection error: ' + e.message;
       });
   });
 
-  // Allow pressing Enter in PIN field
   document.getElementById('pinInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') document.getElementById('pinBtn').click();
   });
 
-  // Lock button — go back to PIN screen
+  // ── Lock ──────────────────────────────────────────────────────────────────
   document.getElementById('lockBtn').addEventListener('click', function() {
-    currentGroup = ''; currentPin = ''; allTickets = [];
-    document.getElementById('mainContent').style.display  = 'none';
-    document.getElementById('signedInBar').style.display  = 'none';
-    document.getElementById('pinScreen').style.display    = 'block';
+    currentGroup = ''; currentPin = ''; allTickets = []; activeSheet = 'all';
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('signedInBar').style.display = 'none';
+    document.getElementById('pinScreen').style.display = 'block';
     document.getElementById('pinInput').value = '';
     document.getElementById('pinMsg').textContent = '';
     document.getElementById('serialFilter').value = '';
+    document.getElementById('unreleasedOnly').checked = false;
     document.getElementById('tableWrap').innerHTML = '';
+    document.querySelectorAll('.tab').forEach(function(t, i) { t.classList.toggle('active', i === 0); });
     setStatus('', '');
   });
 
-  // Refresh
-  document.getElementById('refreshBtn').addEventListener('click', function() {
-    if (!currentGroup || !currentPin) return;
-    loadTickets();
+  // ── Sheet tabs ────────────────────────────────────────────────────────────
+  document.querySelectorAll('.tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      activeSheet = btn.dataset.sheet;
+      document.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      renderTable();
+    });
   });
 
-  // Serial filter
+  // ── Filters ───────────────────────────────────────────────────────────────
+  document.getElementById('unreleasedOnly').addEventListener('change', renderTable);
   document.getElementById('serialFilter').addEventListener('input', renderTable);
 
-  function loadTickets() {
+  // ── Refresh ───────────────────────────────────────────────────────────────
+  document.getElementById('refreshBtn').addEventListener('click', function() {
+    if (!currentGroup || !currentPin) return;
     setStatus('Refreshing...', '');
     api('getReleaseGroupTickets', { group: currentGroup, pin: currentPin })
       .then(function(res) {
         if (!res || !res.ok) {
-          if (res && res.auth === false) {
-            // PIN no longer valid — lock the page
-            document.getElementById('lockBtn').click();
-            return;
-          }
-          setStatus('Error loading tickets.', 'err');
-          return;
+          if (res && res.auth === false) { document.getElementById('lockBtn').click(); return; }
+          setStatus('Error refreshing.', 'err'); return;
         }
         allTickets = res.tickets || [];
-        setStatus('', '');
-        renderTable();
+        setStatus('', ''); renderTable();
       })
       .catch(function() { setStatus('Connection error.', 'err'); });
-  }
+  });
 
+  // ── Render table ──────────────────────────────────────────────────────────
   function renderTable() {
     var serialFilter   = document.getElementById('serialFilter').value.trim().toLowerCase();
     var unreleasedOnly = document.getElementById('unreleasedOnly').checked;
 
-    var tickets = allTickets.filter(function(t) {
-      if (activeSheet !== 'all' && t.sheet !== activeSheet) return false;
+    var scoped = allTickets.filter(function(t) {
+      return activeSheet === 'all' || t.sheet === activeSheet;
+    });
+    var filtered = scoped.filter(function(t) {
       if (unreleasedOnly && t.released) return false;
       if (serialFilter && t.serial.toLowerCase().indexOf(serialFilter) === -1) return false;
       return true;
     });
 
     // Count badge
-    var scopeTickets = allTickets.filter(function(t) { return activeSheet === 'all' || t.sheet === activeSheet; });
-    var unreleased = scopeTickets.filter(function(t) { return !t.released; }).length;
+    var unreleased = scoped.filter(function(t) { return !t.released; }).length;
     var badge = document.getElementById('countBadge');
-    badge.textContent = unreleased + ' of ' + scopeTickets.length + ' unreleased';
-    badge.className = unreleased > 0 ? 'badge unreleased' : 'badge total';
+    badge.textContent = unreleased + ' of ' + scoped.length + ' unreleased';
+    badge.className = unreleased > 0 ? 'count-badge has-unreleased' : 'count-badge all-released';
 
-    if (tickets.length === 0) {
-      var msg = serialFilter ? 'No matching serial.' : (unreleasedOnly ? 'All tickets in this view are released.' : 'No tickets in this group.');
+    if (filtered.length === 0) {
+      var emptyMsg = serialFilter ? 'No matching serial.' :
+                     unreleasedOnly ? 'All tickets in this view are released.' :
+                     'No tickets in this group.';
       document.getElementById('tableWrap').innerHTML =
-        '<div style="color:var(--muted);font-size:14px;padding:20px 0;text-align:center;">' + msg + '</div>';
+        '<div style="color:var(--muted);font-size:14px;padding:20px 0;text-align:center;">' + emptyMsg + '</div>';
       return;
     }
 
     var h = '<div class="tbl-header"><div>Serial</div><div class="h-name">Name</div><div>Status</div></div>';
-    tickets.forEach(function(t) {
+    filtered.forEach(function(t) {
       h += '<div class="tbl-row"><div>' + esc(t.serial) + '</div>' +
            '<div class="name-cell">' + esc(t.name || '—') + '</div><div>';
       if (t.released) {
@@ -309,6 +308,7 @@
     document.getElementById('tableWrap').innerHTML = h;
   }
 
+  // ── Release ticket ────────────────────────────────────────────────────────
   function doRelease(serial, btn) {
     btn.disabled = true; btn.textContent = '...';
     setStatus('', '');
