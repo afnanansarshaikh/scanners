@@ -169,7 +169,7 @@
           sel.innerHTML = '<option value="">No groups available</option>';
           return;
         }
-        sel.innerHTML = '<option value="">— Select group —</option>';
+        sel.innerHTML = '<option value="">&#8212; Select group &#8212;</option>';
         res.groups.forEach(function(g) {
           var o = document.createElement('option');
           o.value = g; o.textContent = g;
@@ -298,7 +298,7 @@
     var h = '<div class="tbl-header"><div>Serial</div><div class="h-name">Name</div><div>Status</div></div>';
     filtered.forEach(function(t) {
       h += '<div class="tbl-row"><div>' + esc(t.serial) + '</div>' +
-           '<div class="name-cell">' + esc(t.name || '—') + '</div><div>';
+           '<div class="name-cell">' + esc(t.name || '--') + '</div><div>';
       if (t.released) {
         h += '<span class="released-tag">Released</span>';
       } else {
