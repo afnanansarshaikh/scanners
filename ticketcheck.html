@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Check</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #fff;
+      --accent: #1976d2;
+      --ok: #2e7d32;
+      --err: #c62828;
+      --warn: #f0ad4e;
+      --muted: #6b7280;
+      --text: #111;
+      --border: #e5e7eb;
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; }
+    
+    .wrap { max-width: 900px; margin: 0 auto; padding: 20px 16px 40px; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: none; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); font-family: inherit; padding: 0; margin-bottom: 16px; text-decoration: none; }
+    .back-btn:hover { text-decoration: underline; }
+    .card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 24px; box-shadow: var(--shadow); }
+    .card-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 20px; }
+    
+    input[type=text], input[type=password], select { width: 100%; padding: 11px 14px; margin: 5px 0; background: #f9fafb; border: 1px solid var(--border); border-radius: 10px; font-size: 15px; color: var(--text); font-family: inherit; transition: border-color 0.2s; }
+    input:focus, select:focus { outline: none; border-color: var(--accent); background: #fff; }
+    
+    .btn { padding: 11px 18px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; font-size: 14px; font-family: inherit; transition: all 0.18s; }
+    .btn.primary { background: var(--accent); color: #fff; width: 100%; min-height: 44px; }
+    .btn.primary:hover { background: #1565c0; }
+    .btn.danger { background: var(--err); color: #fff; }
+    .btn.danger:hover { background: #b71c1c; }
+    .btn.success { background: var(--ok); color: #fff; }
+    .btn.success:hover { background: #1b5e20; }
+    .btn.ghost { background: #f3f4f6; color: var(--text); border: 1px solid var(--border); }
+    .btn.ghost:hover { background: #e5e7eb; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Login Area */
+    #loginBox { max-width: 380px; margin: 0 auto; }
+    #loginMsg { font-size: 13px; color: var(--err); text-align: center; margin-top: 8px; min-height: 18px; }
+    .controls { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    
+    /* Dashboard Area */
+    #dashboardBox { display: none; }
+    .signin-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+    .signin-info { font-size: 14px; font-weight: 600; }
+    .signin-info .name { color: var(--accent); }
+    
+    /* Filters */
+    .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .filter-group label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
+    .dashboard-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+    #statusMsg { font-size: 14px; font-weight: 600; }
+    #statusMsg.ok { color: var(--ok); }
+    #statusMsg.err { color: var(--err); }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 12px; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+    .data-table th { padding: 12px 14px; background: #f9fafb; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 2px solid var(--border); white-space: nowrap; }
+    .data-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover { background: #f9fafb; }
+    .type-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .type-singles { background: #e0f2fe; color: #1e3a8a; border: 1px solid #bae6fd; }
+    .type-families { background: #f3e8ff; color: #581c87; border: 1px solid #e9d5ff; }
+    
+    .action-cell { display: flex; gap: 6px; white-space: nowrap; }
+    .action-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; font-family: inherit; transition: all 0.15s; }
+
+    @media (max-width: 600px) {
+      .wrap { padding: 12px 10px 30px; }
+      .card { padding: 16px 12px; }
+      .data-table th, .data-table td { padding: 10px 8px; font-size: 13px; }
+      .action-cell { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-btn" href="https://script.google.com/macros/s/AKfycbw1AFxs7S3RO8Eg1QjqTHMLPRs-JZRrn1CjqDuIcCzFE2va_wukhlguoqOFWU_C9UW6aQ/exec?page=home">&#8592; Back to Home</a>
+  
+  <div class="card">
+    <div class="card-title">🎫 Ticket Check</div>
+    
+    <div id="loginBox">
+      <div style="text-align:center; font-size:14px; color:var(--muted); margin-bottom:16px;">Staff credentials required to access the verification queue.</div>
+      <input id="staffName" type="text" placeholder="Name" autocomplete="off">
+      <input id="staffPin" type="password" placeholder="PIN" autocomplete="off">
+      <div class="controls"><button class="btn primary" id="loginBtn">Login</button></div>
+      <div id="loginMsg"></div>
+    </div>
+
+    <div id="dashboardBox">
+      <div class="signin-row">
+        <div class="signin-info">Signed in as <span class="name" id="staffLabel"></span></div>
+        <button class="btn danger" id="logoutBtn" style="padding: 8px 14px; font-size: 12px;">Logout</button>
+      </div>
+
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label>Ticket Type</label>
+          <select id="filterType">
+            <option value="All">All Tickets</option>
+            <option value="Singles">Singles Tickets</option>
+            <option value="Families">Families Tickets</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Search Name</label>
+          <input type="text" id="filterName" placeholder="Type to search...">
+        </div>
+        <div class="filter-group">
+          <label>Search Mobile</label>
+          <input type="text" id="filterMobile" placeholder="Type mobile number...">
+        </div>
+      </div>
+
+      <div class="dashboard-actions">
+        <button class="btn ghost" id="refreshBtn">↻ Refresh Queue</button>
+        <div id="statusMsg"></div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Name</th>
+              <th>Mobile</th>
+              <th>Adults</th>
+              <th>Kids</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="6" style="text-align:center; color:var(--muted); padding:20px;">Fetching pending tickets...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Setup API exactly like scanners
+  var API_URL = 'https://script.google.com/macros/s/AKfycbzDTSUGQu-U3likHzVhAEysdzI2GyQnEuwGhDrlr026gbotWXTVkIUIkGFyn-tmgMqVng/exec';
+  var PAGE    = 'ticketcheck';
+  var _SECRET = 'ad66538487ecebc7c5e893078f016de6e6046aed65d69de5405005f511d1c3c8';
+
+  var staffLabel = '', staffSessionId = null, _sessionPoll = null;
+  var pendingData = []; // Local cache for filtering
+
+  // DOM Elements
+  var loginBtn = document.getElementById('loginBtn');
+  var logoutBtn = document.getElementById('logoutBtn');
+  var loginMsg = document.getElementById('loginMsg');
+  var statusMsg = document.getElementById('statusMsg');
+  var tableBody = document.getElementById('tableBody');
+  
+  var filterType = document.getElementById('filterType');
+  var filterName = document.getElementById('filterName');
+  var filterMobile = document.getElementById('filterMobile');
+
+  function api(action, params) {
+    var body = Object.assign({ action: action, page: PAGE, secret: _SECRET }, params);
+    return fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      redirect: 'follow'
+    }).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    }).then(function(text) {
+      try { return JSON.parse(text); }
+      catch(e) { throw new Error('Bad response: ' + text.substring(0, 120)); }
+    });
+  }
+
+  function setStatus(msg, isError) {
+    statusMsg.textContent = msg;
+    statusMsg.className = isError ? 'err' : 'ok';
+    if (!isError && msg) setTimeout(function(){ statusMsg.textContent = ''; }, 4000);
+  }
+
+  function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  // Login
+  loginBtn.addEventListener('click', function() {
+    var name = document.getElementById('staffName').value.trim();
+    var pin  = document.getElementById('staffPin').value.trim();
+    if (!name || !pin) { loginMsg.textContent = 'Enter name and PIN'; return; }
+    
+    loginBtn.disabled = true;
+    loginMsg.textContent = 'Verifying credentials...';
+
+    api('login', { name: name, pin: pin })
+      .then(function(res) {
+        loginBtn.disabled = false;
+        if (!res || !res.ok) {
+          loginMsg.textContent = res && res.message ? res.message : 'Invalid name or PIN';
+          return;
+        }
+        staffLabel = res.label || name;
+        staffSessionId = res.sessionId || null;
+        
+        document.getElementById('staffLabel').textContent = staffLabel;
+        document.getElementById('loginBox').style.display = 'none';
+        document.getElementById('dashboardBox').style.display = 'block';
+        document.getElementById('staffName').value = '';
+        document.getElementById('staffPin').value = '';
+        loginMsg.textContent = '';
+        
+        startSessionPoll();
+        loadPendingTickets();
+      })
+      .catch(function(e) {
+        loginBtn.disabled = false;
+        loginMsg.textContent = 'Connection error — try again.';
+      });
+  });
+
+  // Fetch Data
+  document.getElementById('refreshBtn').addEventListener('click', loadPendingTickets);
+
+  function loadPendingTickets() {
+    setStatus('Syncing queue...', false);
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:20px;">Fetching pending tickets...</td></tr>';
+    
+    api('getPendingTickets', { staffLabel: staffLabel, sessionId: staffSessionId })
+      .then(function(res) {
+        if (!res || !res.ok) {
+          setStatus('Failed to fetch data.', true);
+          return;
+        }
+        pendingData = res.data || [];
+        setStatus('Queue up to date.', false);
+        renderTable();
+      })
+      .catch(function(e) {
+        setStatus('Connection error.', true);
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--err); padding:20px;">Error loading data.</td></tr>';
+      });
+  }
+
+  // Filter Event Listeners
+  filterType.addEventListener('change', renderTable);
+  filterName.addEventListener('input', renderTable);
+  filterMobile.addEventListener('input', renderTable);
+
+  function renderTable() {
+    var fType = filterType.value;
+    var fName = filterName.value.toLowerCase().trim();
+    var fMob  = filterMobile.value.trim();
+
+    var filtered = pendingData.filter(function(row) {
+      if (fType !== 'All' && row.ticketType !== fType) return false;
+      if (fName && row.name.toLowerCase().indexOf(fName) === -1) return false;
+      if (fMob && row.phone.indexOf(fMob) === -1) return false;
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      var msg = pendingData.length === 0 ? "No pending tickets in the system." : "No tickets match your filters.";
+      tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:20px;">' + msg + '</td></tr>';
+      return;
+    }
+
+    var html = '';
+    filtered.forEach(function(r) {
+      var typeClass = r.ticketType === 'Singles' ? 'type-singles' : 'type-families';
+      html += '<tr>' +
+        '<td><span class="type-badge ' + typeClass + '">' + esc(r.ticketType) + '</span></td>' +
+        '<td style="font-weight:600;">' + esc(r.name) + '</td>' +
+        '<td style="font-family:monospace; color:var(--muted);">' + esc(r.phone) + '</td>' +
+        '<td>' + r.adults + '</td>' +
+        '<td>' + r.kids + '</td>' +
+        '<td class="action-cell">' +
+          '<button class="action-btn btn success" onclick="processRow(this, \'accept\', \'' + r.sheetName + '\', ' + r.rowNum + ')">Accept</button>' +
+          '<button class="action-btn btn danger" onclick="processRow(this, \'reject\', \'' + r.sheetName + '\', ' + r.rowNum + ')">Reject</button>' +
+        '</td>' +
+      '</tr>';
+    });
+    tableBody.innerHTML = html;
+  }
+
+  // Row Processing (Accept / Reject)
+  window.processRow = function(btn, actionType, sheetName, rowNum) {
+    if (actionType === 'accept' && !confirm("Accept ticket? A unique ID will be generated and the ticket will be emailed.")) return;
+    if (actionType === 'reject' && !confirm("Reject ticket? This entry will be moved to the Rejected log and no email will be sent.")) return;
+
+    // Disable all buttons in this row visually
+    var parentTd = btn.parentElement;
+    var btns = parentTd.querySelectorAll('button');
+    for(var i=0; i<btns.length; i++) { btns[i].disabled = true; }
+    btn.textContent = '...';
+
+    setStatus('Processing...', false);
+    var endpoint = actionType === 'accept' ? 'acceptTicketCheck' : 'rejectTicketCheck';
+
+    api(endpoint, { sourceSheet: sheetName, rowNum: rowNum, staffLabel: staffLabel, sessionId: staffSessionId })
+      .then(function(res) {
+        if (res && res.ok) {
+          setStatus('✓ ' + (actionType === 'accept' ? 'Accepted' : 'Rejected') + ' successfully.', false);
+          // Remove from local cache and re-render to avoid full reload delay
+          pendingData = pendingData.filter(function(item) {
+            return !(item.sheetName === sheetName && item.rowNum === rowNum);
+          });
+          // Adjust remaining rowNums for cache accuracy (since a row was deleted above it)
+          pendingData.forEach(function(item) {
+            if (item.sheetName === sheetName && item.rowNum > rowNum) {
+              item.rowNum = item.rowNum - 1;
+            }
+          });
+          renderTable();
+        } else {
+          setStatus('✗ Error: ' + (res && res.message ? res.message : 'Action failed.'), true);
+          for(var i=0; i<btns.length; i++) { btns[i].disabled = false; }
+          btn.textContent = actionType === 'accept' ? 'Accept' : 'Reject';
+        }
+      })
+      .catch(function(e) {
+        setStatus('Connection error.', true);
+        for(var i=0; i<btns.length; i++) { btns[i].disabled = false; }
+        btn.textContent = actionType === 'accept' ? 'Accept' : 'Reject';
+      });
+  };
+
+  // Session & Logout
+  function startSessionPoll() {
+    if (_sessionPoll) clearInterval(_sessionPoll);
+    _sessionPoll = setInterval(function() {
+      if (!staffSessionId || !staffLabel) return;
+      api('checkSession', { name: staffLabel, sessionId: staffSessionId })
+        .then(function(r) {
+          if (r && !r.valid) {
+            clearInterval(_sessionPoll); _sessionPoll = null;
+            doLogout();
+            loginMsg.textContent = 'Logged out — session started on another page.';
+          }
+        }).catch(function(){});
+    }, 15000);
+  }
+
+  logoutBtn.addEventListener('click', function() {
+    api('logout', { sessionId: staffSessionId, name: staffLabel }).catch(function(){});
+    doLogout();
+  });
+
+  function doLogout() {
+    if (_sessionPoll) { clearInterval(_sessionPoll); _sessionPoll = null; }
+    staffSessionId = null; staffLabel = ''; 
+    pendingData = [];
+    tableBody.innerHTML = '';
+    
+    document.getElementById('dashboardBox').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'block';
+    document.getElementById('staffLabel').textContent = '';
+    loginMsg.textContent = 'Logged out successfully.';
+    loginMsg.style.color = 'var(--ok)';
+  }
+
+  window.addEventListener('pagehide', function() {
+    try { if (staffSessionId && staffLabel) api('logout', { sessionId: staffSessionId, name: staffLabel }); } catch(e){}
+  });
+</script>
+</body>
+</html>
